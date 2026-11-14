@@ -4,3 +4,10 @@ frontend/dist
 __pycache__
 .pytest_cache
 *.pdf
+.env
+.env.*
+*.exe
+*.msi
+*.msix
+*.msixbundle
+*.bundle

@@ -6,6 +6,16 @@ data/*.json
 !data/january-2026.json
 data/*.tmp
 .env
+.env.*
+!.env.example
 node_modules/
 dist/
 .vercel/
+
+# Local installers, source assignment, and repository backups
+*.exe
+*.msi
+*.msix
+*.msixbundle
+*.bundle
+/REint Full Stack SWE challenge v4 Shared.pdf
