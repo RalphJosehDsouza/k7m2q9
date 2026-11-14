@@ -11,7 +11,7 @@ import httpx
 from backend.analytics import normalise
 
 BASE = 'https://data.elexon.co.uk/bmrs/api/v1/datasets'
-DATA_PATH = Path(os.environ.get('WIND_DATA_PATH', 'data/january-2026.json'))
+DATA_PATH = Path(os.environ.get('WIND_DATA_PATH', str(Path(__file__).resolve().parent.parent / 'data' / 'january-2026.json')))
 
 
 def fetch(client, dataset, params):

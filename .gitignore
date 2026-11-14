@@ -3,7 +3,9 @@ __pycache__/
 .pytest_cache/
 *.pyc
 data/*.json
+!data/january-2026.json
 data/*.tmp
 .env
 node_modules/
 dist/
+.vercel/

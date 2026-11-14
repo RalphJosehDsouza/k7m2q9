@@ -1,7 +1,9 @@
 import json
 from functools import lru_cache
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.staticfiles import StaticFiles
 
 from backend.analytics import decision_view, month_view, normalise
 from backend.ingest import DATA_PATH
@@ -23,6 +25,14 @@ def snapshot():
 @app.get('/api/health')
 def health():
     return {'status': 'ok', 'data_file_present': DATA_PATH.exists()}
+
+
+@app.get('/api/ready')
+def ready():
+    forecasts, actuals, _ = snapshot()
+    if not forecasts or not actuals:
+        raise HTTPException(503, 'Data snapshot is empty.')
+    return {'status': 'ready', 'forecasts': len(forecasts), 'actuals': len(actuals)}
 
 
 @app.get('/api/metadata')
@@ -47,3 +57,10 @@ def decision(date: str = '2026-01-15', cutoff: str = Query('09:00', pattern=r'^(
 def accuracy(cutoff: str = Query('09:00', pattern=r'^([01]\d|2[0-3]):[0-5]\d$')):
     forecasts, actuals, _ = snapshot()
     return month_view(forecasts, actuals, cutoff)
+
+
+# API routes come first. A production build lets this same app serve the UI.
+# During Vite development this directory may not exist, which is intentional.
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / 'frontend' / 'dist'
+if FRONTEND_DIST.is_dir():
+    app.mount('/', StaticFiles(directory=str(FRONTEND_DIST), html=True), name='frontend')
